@@ -1,0 +1,63 @@
+<h1>The list of Super-users</h1>
+<table *ngIf="users.length || addingNewUser; else noUsers">
+  <tr *ngIf="users.length">
+    <th>User</th>
+    <th>Email</th>
+  </tr>
+  <tr *ngFor="let user of users" (click)="editUser(user)">
+    <ng-container *ngIf="!user.editing; else editRow">
+      <td>
+        <p>{{ user.name }}</p>
+      </td>
+      <td>
+        <p>{{ user.email }}</p>
+      </td>
+    </ng-container>
+  </tr>
+  <tr *ngIf="addingNewUser">
+    <ng-container *ngTemplateOutlet="editRow"></ng-container>
+  </tr>
+</table>
+<ng-template #noUsers> <p>There are no users yet.</p></ng-template>
+<div fxLayout="row" fxLayoutGap="1rem">
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="addUser()"
+    *ngIf="!(editingUser || addingNewUser)"
+  >
+    Add new user
+  </button>
+  <button
+    mat-raised-button
+    color="primary"
+    (click)="save()"
+    [disabled]="form.invalid"
+    *ngIf="editingUser || addingNewUser"
+  >
+    Save
+  </button>
+  <button
+    mat-raised-button
+    (click)="cancel()"
+    *ngIf="editingUser || addingNewUser"
+  >
+    Cancel
+  </button>
+</div>
+
+<ng-template #editRow [formGroup]="form">
+  <td>
+    <mat-form-field>
+      <input required matInput formControlName="name" placeholder="Name" />
+    </mat-form-field>
+  </td>
+  <td>
+    <mat-form-field>
+      <input required matInput formControlName="email" placeholder="Email" />
+      <mat-error *ngIf="form.controls['email'].hasError('email')"
+        >Email format should be xx@asd.com</mat-error
+      >
+    </mat-form-field>
+  </td>
+</ng-template>
